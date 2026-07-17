@@ -29,6 +29,16 @@ function addUser(name, role, email, password) {
         return false;
     }
 
+
+    const existin = db.prepare(`SELECT * FROM users WHERE email = ?`).get(email);
+    if (existin) {
+        const msgErr = `Échec ajout utilisateur : Un utilisateur avec ce email '${email}' existe déjà.`;
+        console.error(msgErr);
+        log(msgErr, "WARNING");
+        return false;
+    }
+
+
     try {
         db.prepare(`INSERT INTO users (name, role, email, password) VALUES (?, ?, ?, ?)`)
             .run(name, role, email, password);

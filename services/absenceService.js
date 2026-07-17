@@ -1,72 +1,71 @@
+import Grades from "../models/GradesModel.js";
 import db from "../db/data.js";
 
 
 
-// Ajouter un etudiant 
-function addAbsence(student_id, date, status = 0) {
-    const statusNum = Number(status);
 
-    if (!student_id || !date || (statusNum !== 0 && statusNum !== 1)) {
-        console.error('L\'étudiant, la date et un statut valide (0 ou 1) sont obligatoires.');
+// ajouter une note (entre 0 et 20)
+function addGrades(student_id, subject_id, note) {
+    if (note < 0 || note > 20) { 
+        console.error('La note doit être comprise entre 0 et 20.');
         return false;
     }
 
-    const student = db.prepare(`SELECT * FROM students WHERE id = ?`)
-        .get(student_id);
-    if (!student) {
-        console.error('Aucun étudiant trouvé avec cet identifiant.');
-        return false;
-    }
-
-    const result = db.prepare(`INSERT INTO absences (student_id, date, status) VALUES (?, ?, ?)`)
-        .run(student_id, date, statusNum);
-
-    return result.lastInsertRowid;
+    db.prepare(`INSERT INTO grades (student_id, subject_id, note) VALUES (?, ?, ?)`)
+        .run(student_id, subject_id, note);
+    return true;
 }
 
 
 
 
-// Marquer une absence
-function marquerAbsence(id, status) {
-    const statusNum = Number(status);
-
-    if (!id || status === undefined || (statusNum !== 0 && statusNum !== 1)) {
-        console.error('L\'identifiant et un statut valide (0 ou 1) sont obligatoires.');
+// modifier une note
+function updateGrades(student_id, subject_id, note) {
+    if (note < 0 || note > 20) {  
+        console.error('La note doit être comprise entre 0 et 20.');
         return false;
     }
 
-    const existing = db.prepare(`SELECT * FROM absences WHERE id = ?`)
-        .get(id);
-    if (!existing) {
-        console.error('Aucune absence trouvée avec cet identifiant.');
-        return false;
-    }
-
-    const result = db.prepare(`UPDATE absences SET status = ? WHERE id = ?`)
-        .run(statusNum, id);
-
-    return result.changes > 0;
+    db.prepare(`UPDATE grades SET note = ? WHERE student_id = ? AND subject_id = ?`)
+        .run(note, student_id, subject_id);
+    return true;
 }
 
 
 
-// consulter les absences
-function consulerAbsences(student_id) {
+
+// supprimer une note
+function deleteGrades(id) {
+    db.prepare(`DELETE FROM grades WHERE id = ?`)
+        .run(id);
+}
+
+
+
+
+// calculer la moyenne d'un étudiant
+function calculeGrade(student_id) {
+    const rows = db.prepare(`SELECT note FROM grades WHERE student_id = ?`)
+        .all(student_id);
+
+    if (rows.length === 0) return 0;
+
+    const sum = rows.reduce((acc, row) => acc + row.note, 0);
+    return sum / rows.length;
+}
+
+
+
+
+// lister les notes des etudiants
+function listerNotesEtudiant(student_id) {
     if (!student_id) {
         console.error('L\'identifiant de l\'étudiant est obligatoire.');
-        return null;
+        return [];
     }
 
-    const student = db.prepare(`SELECT * FROM students WHERE id = ?`)
-        .get(student_id);
-    if (!student) {
-        console.error('Aucun étudiant trouvé avec cet identifiant.');
-        return null;
-    }
-
-    return db.prepare(`SELECT * FROM absences WHERE student_id = ?`)
-        .all(student_id);
+    return db.prepare(`SELECT grades.id, subjects.nom AS matiere, grades.note FROM grades JOIN subjects ON grades.subject_id = subjects.id WHERE grades.student_id = ? `)
+    .all(student_id);
 }
 
-export { addAbsence, marquerAbsence, consulerAbsences };
+export { addGrades, updateGrades, deleteGrades, calculeGrade, listerNotesEtudiant };

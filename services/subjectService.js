@@ -120,6 +120,7 @@ function affecteSubject(id, teacher_id) {
     const teacher = db.prepare(`SELECT * FROM teachers WHERE id = ?`)
         .get(teacher_id);
     if (!teacher) {
+
         console.error('Aucun professeur trouvé avec cet identifiant.');
         return false;
     }
