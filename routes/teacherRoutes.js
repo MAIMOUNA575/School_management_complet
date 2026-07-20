@@ -3,7 +3,7 @@ import {addTeacher, updateTeacher, deleteTeacher, rechercheTeacher, listerTeache
 
 
 const app = express();
-
+app.use(express.json())
 app.get("/", (req, res) => {
     res.json(listerTeachers());
 });
@@ -34,5 +34,16 @@ app.put('/:id',(req,res)=>{
         })
     }
     res.json(teacher);
+})
+
+
+app.delete('/:id',(req,res)=>{
+    const teacher = deleteTeacher(req.params.id),
+    if(!teacher){
+        return req.status(404).json({
+            message : 'Professeur non trouve'
+        })
+    }
+    res.json(teacher)
 })
 export default app;

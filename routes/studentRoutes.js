@@ -2,7 +2,7 @@ import express from "express";
 import {addStudent, updateStudent, deleteStudent, rechercheStudent, listerStudents} from "../services/studentService.js";
 
 const app = express();
-
+app.use(express.json())
 app.get('/',(req,res)=>{
     res.json(listerStudents());
 });
@@ -35,5 +35,14 @@ app.put('/:id',(req,res)=>{
     res.json(student);
 })
 
+app.delete('/:id',(req,res)=>{
+    const student = deleteStudent(req.params.id);
+    if(!student){
+        return res.status(404).json({
+            message: 'Etudiant non trouve'
+        })
+    }
+    res.json(user);
+})
 
 export default app;

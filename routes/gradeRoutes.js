@@ -2,7 +2,7 @@ import express from 'express';
 import { addGrade, updateGrade, deleteGrade, rechercheGrade, listerGrades } from '../services/gradeService.js';
 
 const app = express();
-
+app.use(express.json())
 app.get('/', (req, res) => {
     res.json(listerGrades());
 });

@@ -2,7 +2,7 @@ import express from 'express';
 import { addSubject, updateSubject, deleteSubject, rechercheSubject, listerSubjects } from '../services/subjectService.js';
 
 const app = express();
-
+app.use(express.json())
 app.get('/',(req,res)=> {
     res.json(listerSubjects());
 });
@@ -30,6 +30,16 @@ app.put('/:id',(req,res)=>{
     if(!subject){
         return res.status(404).json({
             message:'Matiere non trouvee'
+        })
+    }
+    res.json(subject)
+})
+
+app.delete('/:id',(req,res)=>{
+    const subject = deleteSubject(req.params.id);
+    if(!subject){
+        return res.status(404).json({
+            message : 'Sujet non trouve'
         })
     }
     res.json(subject)

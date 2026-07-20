@@ -2,7 +2,7 @@ import express from "express";
 import {addStudent, updateStudent, deleteStudent, rechercheStudent, listerStudents} from "../services/studentService.js";
 
 const app = express();
-
+app.use(express.json())
 app.get("/", (req, res) => {
     res.json(listerStudents());
 });
