@@ -1,49 +1,23 @@
 import express from "express";
-import {addTeacher, updateTeacher, deleteTeacher, rechercheTeacher, listerTeachers} from "../services/teacherService.js";
+import { liste_Teacher, recherche_Teacher, add_Teacher, add_Teacher_id, update_Teacher, delete_Teacher} from "../controler/teacherControler";
 
 
-const app = express();
-app.use(express.json())
-app.get("/", (req, res) => {
-    res.json(listerTeachers());
-});
-app.get("/:id",(req, res)=> {
-    const teacher = rechercheTeacher(req.params.id);
-    if (!teacher) {
-        return res.status(404).json({
-            message: "Enseignant introuvable"
-        });
-    }
-    res.json(teacher);
-});
 
-app.post('/',(req,res)=>{
-    const teacher = addTeacher(req.body);
-    res.status(201).json(teacher);
-});
-app.post('/:id',(req,res)=>{
-    const teacher = addTeacher(req.params.id,req.body);
-    res.status(201).json(teacher);
-})
-
-app.put('/:id',(req,res)=>{
-    const teacher = updateTeacher(req.params.id,req.body);
-    if(!teacher){
-        return res.status(404).json({
-            message:'Enseignant non trouve'
-        })
-    }
-    res.json(teacher);
-})
+const router = express.Router();
 
 
-app.delete('/:id',(req,res)=>{
-    const teacher = deleteTeacher(req.params.id),
-    if(!teacher){
-        return req.status(404).json({
-            message : 'Professeur non trouve'
-        })
-    }
-    res.json(teacher)
-})
-export default app;
+router.get("/", liste_Teacher);
+
+router.get("/:id",recherche_Teacher);
+
+router.post('/',add_Teacher);
+
+router.post('/:id',add_Teacher_id)
+
+router.put('/:id',update_Teacher)
+
+
+router.delete('/:id',delete_Teacher)
+
+
+export default router;

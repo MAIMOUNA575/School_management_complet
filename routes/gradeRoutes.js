@@ -1,47 +1,22 @@
 import express from 'express';
-import { addGrade, updateGrade, deleteGrade, rechercheGrade, listerGrades } from '../services/gradeService.js';
+import {lister_Grade, recherche_Grade, add_Grade, add_Grade_id, update_Grade, delete_Grade} from "../controler/gradeControler.js";
 
-const app = express();
-app.use(express.json())
-app.get('/', (req, res) => {
-    res.json(listerGrades());
-});
-app.get('/:id', (req, res) => {
-    const grade = rechercheGrade(req.params.id);
-    if (!grade) {
-        return res.status(404).json({
-            message: 'Grade introuvable'
-        });
-    }
-    res.json(grade);
-});
 
-app.post('/',(req,res)=>{
-    const grade = addGrade(req,res);
-    res.status(201).json(grade);
-});
-app.post('/:id',(req,res)=>{
-    const grade = addGrade(req.params.id,req.body);
-    res.status(201).json(grade);
-})
 
-app.put('/:id',(req,res)=>{
-    const grade = updateGrade(req.params.id,req.body);
-    if(!grade){
-        return res.status(404).json({
-            message :'Note non trouvee '
-        })
-    }
-    res.json(grade);
-})
+const router = express.Router();
 
-app.delete('/:id',(req,res)=>{
-    const grade = deleteGrade(req.params.id);
-    if(!grade){
-        return res.status(404).json({
-            message :'Note non trouvee '
-        })
-    }
-    res.json(grade);
-})
-export default app;
+
+router.get('/', lister_Grade);
+
+router.get('/:id', recherche_Grade);
+
+router.post('/',add_Grade);
+
+router.post('/:id',add_Grade_id)
+
+router.put('/:id',update_Grade)
+
+router.delete('/:id',delete_Grade)
+
+
+export default router;

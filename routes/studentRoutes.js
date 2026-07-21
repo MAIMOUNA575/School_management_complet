@@ -1,48 +1,21 @@
 import express from "express";
-import {addStudent, updateStudent, deleteStudent, rechercheStudent, listerStudents} from "../services/studentService.js";
+import {lister_Student, recherche_Student, add_Student, add_Student_id, update_Student, delete_Student} from '../controler/studentControler'
 
-const app = express();
-app.use(express.json())
-app.get('/',(req,res)=>{
-    res.json(listerStudents());
-});
-app.get('/:id',(req,res)=>{
-    const student = rechercheStudent(req.params.id);
-    if(!student){
-        return res.status(404).json({
-            message:'Etudiant introuvable'
-        })
-    }
-    res.json(student)
-})
 
-app.post('/',(req,res)=>{
-    const student = addStudent(req.body);
-    res.status(201).json(student);
-});
-app.post('/:id',(req,res)=>{
-    const student = addStudent(req.params.id,req.body);
-    res.status(201).json(student);
-})
+const router = express.Router();
 
-app.put('/:id',(req,res)=>{
-    const student = updateStudent(req.params.id,req.body);
-    if(!student){
-        return res.status(404).json({
-            message:'Etudiant non trouve'
-        })
-    }
-    res.json(student);
-})
 
-app.delete('/:id',(req,res)=>{
-    const student = deleteStudent(req.params.id);
-    if(!student){
-        return res.status(404).json({
-            message: 'Etudiant non trouve'
-        })
-    }
-    res.json(user);
-})
 
-export default app;
+router.get('/',lister_Student);
+
+router.get('/:id',recherche_Student);
+
+router.post('/',add_Student);
+
+router.post('/:id',add_Student_id);
+
+router.put('/:id',update_Student);
+
+router.delete('/:id',delete_Student);
+
+export default router;

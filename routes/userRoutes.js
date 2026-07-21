@@ -1,55 +1,22 @@
 import express from "express";
+import{lister_User, recherche_User, add_User, add_User_id, update_User, delete_User} from '../controler/userControler.js'
 
-import {addUser,updateUser,deleteUser,rechercheUser,listerUsers} from "../services/userService.js";
+const router = express.Router();
 
-const app = express();
-app.use(express.json())
-app.get("/", (req, res) => {
-    res.json(listerUsers());
-});
-app.get("/:id", (req, res) => {
-    const user = rechercheUser(req.params.id);
-    if (!user) {
-        return res.status(404).json({
-            message: "Utilisateur introuvable"
-        });
-    }
-    res.json(user);
-});
 
-app.post("/", (req, res) => {
-    const user = addUser(req.body);
-    res.status(201).json(user);
-});
-app.post('/:id',(req,res)=>{
-    const user = addUser(req.params.id,req.body);
-    res.status(201).json(user);
-})
+router.get("/", lister_User);
+
+router.get("/:id", recherche_User);
+
+router.post("/",add_User);
+
+router.post('/:id',add_User_id)
 
 
 
-app.put("/:id", (req, res) => {
-    const user = updateUser(req.params.id, req.body);
-    if (!user) {
-        return res.status(404).json({
-            message: "Utilisateur introuvable"
-        });
-    }
-    res.json(user);
-});
+router.put("/:id", update_User);
 
 
+router.delete("/:id",delete_User);
 
-
-
-app.delete("/:id", (req, res) => {
-    const user = deleteUser(req.params.id);
-    if (!user) {
-        return res.status(404).json({
-            message: "Utilisateur introuvable"
-        });
-    }
-    res.json(user);
-});
-
-export default app;
+export default router;
