@@ -5,16 +5,18 @@
   "main": "seed.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node seed server.js",
+    "dev": "nodemon seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "cors": "^2.8.6",
     "dayjs": "^1.11.21",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
   }
 }
